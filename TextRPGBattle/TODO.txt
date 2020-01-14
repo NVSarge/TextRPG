@@ -1,0 +1,15 @@
+[ ] Cold vs Cold - no RT, high BDY - > low chance//  cold reduce RT, not negates
+[ ] 6 vs 6 //explosion of 6-dice
+[ ] item use over item - effects combines or selects
+[ ] increase HP and DMG
+[ ] add magic
+
+
+
+
+
+PERKS
+[ ] Cold - no RT gain, +1item use
+[ ] Tactitian - Select best in reroll
+[ ] Fiechter - damage +1
+[ ] Dancer - retreats +1(pRT -1), strafe +1(fRT+1)

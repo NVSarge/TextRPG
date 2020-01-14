@@ -576,7 +576,7 @@ struct Unit
 		}
 	}
 
-	int AskForReroll(int oldR, bool isAI, bool isRageEnable, DicePool *DP = NULL)
+	int AskForReroll(int oldR, bool isAI, bool isRageEnable, DicePool* DP = NULL)
 	{
 		char c = 'y';
 		vector<int> rerolldices;
@@ -584,7 +584,7 @@ struct Unit
 		if (!isAI)
 		{
 
-			while (c != 'n'&&RDP.amount > 0)
+			while (c != 'n' && RDP.amount > 0)
 			{
 
 				cout << " reroll(y/n)?" << endl;
@@ -874,7 +874,7 @@ struct Option
 {
 	string Text;
 	Item AddDamage;
-	Option(string T, Item *i)
+	Option(string T, Item* i)
 	{
 		Text = T;
 		AddDamage.Att = i->Att;
@@ -1072,7 +1072,7 @@ void ShowStatsMin(Unit Player, Unit Foe)
 }
 
 
-void UseItem(Unit *Player, bool isRested = true, bool isAI = false, bool isShowDices = true)
+void UseItem(Unit* Player, bool isRested = true, bool isAI = false, bool isShowDices = true)
 {
 	if (isRested)
 	{
@@ -1134,7 +1134,7 @@ void UseItem(Unit *Player, bool isRested = true, bool isAI = false, bool isShowD
 }
 
 
-void MakeActions(Unit *Player, Unit *Foe, bool isAI, bool isShowDices = true)
+void MakeActions(Unit* Player, Unit* Foe, bool isAI, bool isShowDices = true)
 {
 	cout << endl << Player->name << " wins " << Player->Stamina << " actions," << Foe->name << " get 1 RT" << endl;
 	Foe->PushRt(1);
@@ -1335,42 +1335,43 @@ void MakeActions(Unit *Player, Unit *Foe, bool isAI, bool isShowDices = true)
 			Player->Used = SR;
 			Player->Inventory[itemnum] = Player->Inventory.back();
 			Player->Inventory.pop_back();
-		}
-		cout << "uses: " << Player->Used.name << " (vs " << Player->RDP.amount - Player->Stamina << "AP)" << endl;
-		if (Player->RDP.amount > 0)
-		{
-			R = Player->AskForReroll(R, isAI, Player->myPerk != Cold);
-		}
 
-		if (R > 0)
-		{
-			R = R + (Player->myPerk == Cold ? 1 : 0);
-			if (R > Player->RDP.amount - Player->Stamina)
+			cout << "uses: " << Player->Used.name << " (vs " << Player->RDP.amount - Player->Stamina << "AP)" << endl;
+			if (Player->RDP.amount > 0)
 			{
-				textcolor(Green);
-				cout << " success!" << endl;
-				Player->UseItem();
+				R = Player->AskForReroll(R, isAI, Player->myPerk != Cold);
+			}
+
+			if (R > 0)
+			{
+				R = R + (Player->myPerk == Cold ? 1 : 0);
+				if (R > Player->RDP.amount - Player->Stamina)
+				{
+					textcolor(Green);
+					cout << " success!" << endl;
+					Player->UseItem();
+
+				}
+				else
+				{
+					textcolor(Magenta);
+					cout << " fails!" << endl;
+					cout << endl << Player->name << " opens bag and";
+					GetBrokeText();
+					cout << endl;
+				}
+				textcolor(White);
 
 			}
 			else
 			{
-				textcolor(Magenta);
-				cout << " fails!" << endl;
 				cout << endl << Player->name << " opens bag and";
 				GetBrokeText();
 				cout << endl;
+				Player->Used.Use();
 			}
-			textcolor(White);
-
+			Player->Stamina = 0;
 		}
-		else
-		{
-			cout << endl << Player->name << " opens bag and";
-			GetBrokeText();
-			cout << endl;
-			Player->Used.Use();
-		}
-		Player->Stamina = 0;
 		break;
 		default:
 			break;
@@ -1380,7 +1381,7 @@ void MakeActions(Unit *Player, Unit *Foe, bool isAI, bool isShowDices = true)
 }
 
 
-bool Battle(Unit *Player, Unit *Foe)
+bool Battle(Unit* Player, Unit* Foe)
 {
 	bool isPlayerWin = true;
 	while (Player->HP > 0 && Foe->HP > 0)
