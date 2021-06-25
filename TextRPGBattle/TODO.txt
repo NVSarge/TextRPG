@@ -1,9 +1,12 @@
 [ ] Cold vs Cold - no RT, high BDY - > low chance//  cold reduce RT, not negates
 [ ] 6 vs 6 //explosion of 6-dice
-[ ] item use over item - effects combines or selects
-[ ] increase HP and DMG
-[ ] add magic
-
+[ ] item use over item - effects combines or selects +1 RT
+[ ] increase HP and DMG 
+[ ] add magic  - MND alternative to BDY, RT - magik collapse
+[ ] add ranged - x throws, fRT++, 
+[ ] add traps - no init or RT gain on trap, each turn RT++, check RT, poison, damage 
+[ ] zero dices in pool
+[ ] ghosts(BDY=0?) - MND attacks
 
 
 
@@ -13,3 +16,7 @@ PERKS
 [ ] Tactitian - Select best in reroll
 [ ] Fiechter - damage +1
 [ ] Dancer - retreats +1(pRT -1), strafe +1(fRT+1)
+[ ] Berserk - quick rage grow, both sides equal (?) double damage on rage
+[ ] Charger - charge cost 1AP
+[ ] Sneak - gains instant base attack on enemy retreat or charge
+[ ] Wall - reduces charges to base attack(RT+1), base attack to - fRT+1

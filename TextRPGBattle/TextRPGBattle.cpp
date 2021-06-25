@@ -146,7 +146,7 @@ struct RageDicePool
 	}
 	void Push(int a = 1)
 	{
-		amount += 1;
+		amount += a;
 		if (amount > 6)
 			amount = 6;
 	}
@@ -207,10 +207,10 @@ string GetClashText()
 		" none",
 		" clang!",
 		" bang! ",
-		" hoosh!",
+		" fhoosh!",
 		" swish!",
 		" pat!  ",
-		" wooze!"
+		" whooze!"
 	};
 	int R = xd6(1, false);
 	cout << Texts[R];
@@ -221,12 +221,12 @@ string GetWoundText()
 {
 	string Texts[7] = {
 		" none",
-		" pierce lung",
-		" cut leg",
-		" cut arm",
-		" wound head",
-		" scratched eye",
-		" broke teeth"
+		" lung pierced",
+		" leg cut",
+		" arm wound",
+		" head wound",
+		" eye pierce",
+		" teeth broken"
 	};
 	int R = xd6(1, false);
 	cout << Texts[R];
@@ -238,10 +238,10 @@ string GetBrokeText()
 	string Texts[7] = {
 		" none",
 		" stepped on the dog's shit",
-		" stepped in the mud",
+		" stepped on the mud",
 		" sneezed",
 		" heavy farted",
-		" hicced up fluorishly",
+		" hicced loud",
 		" coughed with blood"
 	};
 	int R = xd6(1, false);
@@ -291,7 +291,9 @@ enum DNAType
 	Defender,
 	Strafer,
 	Charger,
-	Rager
+	Rager,
+	Sneaker,
+	Waller,
 };
 
 enum Perk
@@ -300,16 +302,22 @@ enum Perk
 	Cold,
 	Fiechter,
 	Dancer,
-	Tactitian
+	Tactitian,
+	Sneak,
+	Wall,
+	Berserker
 };
 
-string Perks[5]
+string Perks[8]
 {
 	"None",
 	"Cold",
 	"Fiechter",
 	"Dancer",
-	"Tactitian"
+	"Tactitian",
+	"Sneaker",
+	"Waller",
+	"Berserker"
 };
 
 struct DNA
@@ -403,9 +411,38 @@ struct DNA
 			else
 			{
 				retval = rand() % 2 + 1;
+			}			
+			break;
+		case Sneaker:
+			if (HP > MaxHP / 3)
+			{
+				retval = 2;
+				if (xd6(1, false) > 4)
+				{
+					retval = 1;
+				}
+			}
+			else
+			{
+				retval = rand() % 5 + 1;
+			}
+			break;
+		case Waller:
+			if (HP > MaxHP / 3)
+			{
+				retval = 2;
+				if (xd6(1, false) > 4)
+				{
+					retval = 1;
+				}
+			}
+			else
+			{
+				retval = rand() % 5 + 1;
 			}
 			break;
 		}
+				
 		return retval;
 	}
 
@@ -572,7 +609,14 @@ struct Unit
 			RDP.Push(a);
 		}
 		else {
-			cout << " cold perk saves!";
+			if (rand() % 3 != 0)
+			{
+				cout << " cold perk saves!";
+			}
+			else
+			{
+				RDP.Push(a);
+			}
 		}
 	}
 
@@ -594,7 +638,7 @@ struct Unit
 				{
 					if (DP != NULL)
 					{
-						cout << RDP.amount << "RT, input numbers e.g. 1,4,7: ";
+						cout << RDP.amount << "RT, input numbers 1.."<<rerolldices.size()<<":";
 						string rr;
 						cin >> rr;
 						stringstream ss(rr);
@@ -646,9 +690,20 @@ struct Unit
 							}
 							else
 							{
-								R = 0;
-								textcolor(Green);
-								cout << " perks saves!" << endl;
+								if (rand() % 3 != 0)
+								{
+									R = 0;
+									textcolor(Green);
+									cout << " cold perk saves!";
+								}	
+								else
+								{
+									isRaged = true;
+									textcolor(Magenta);
+									GetBrokeText();
+									Stamina = 0;
+									R = 0;
+								}
 								break;
 							}
 						}
@@ -679,9 +734,20 @@ struct Unit
 						}
 						else
 						{
-							R = 0;
-							textcolor(Green);
-							cout << " perks saves!" << endl;
+							if (rand() % 3 != 0)
+							{
+								R = 0;
+								textcolor(Green);
+								cout << " cold perk saves!";
+							}
+							else
+							{
+								isRaged = true;
+								textcolor(Magenta);
+								GetBrokeText();
+								Stamina = 0;
+								R = 0;
+							}
 							break;
 						}
 					}
@@ -744,9 +810,20 @@ struct Unit
 					}
 					else
 					{
-						R = 0;
-						textcolor(Green);
-						cout << " perks saves!" << endl;
+						if (rand() % 3 != 0)
+						{
+							R = 0;
+							textcolor(Green);
+							cout << " cold perk saves!";
+						}
+						else
+						{
+							isRaged = true;
+							textcolor(Magenta);
+							GetBrokeText();
+							Stamina = 0;
+							R = 0;
+						}
 						break;
 					}
 				}
@@ -776,9 +853,20 @@ struct Unit
 				}
 				else
 				{
-					R = 0;
-					textcolor(Green);
-					cout << " perks saves!" << endl;
+					if (rand() % 3 != 0)
+					{
+						R = 0;
+						textcolor(Green);
+						cout << " cold perk saves!";
+					}
+					else
+					{
+						isRaged = true;
+						textcolor(Magenta);
+						GetBrokeText();
+						Stamina = 0;
+						R = 0;
+					}
 
 				}
 			}
@@ -804,6 +892,10 @@ struct Unit
 			Base.BDY -= rand() % 2;
 			cout << endl << name << " heavy wounded by " << d * 2;
 			wounds.push_back("heavy " + GetWoundText());
+		}
+		if (Base.BDY == 0)
+		{
+			HP = 0;
 		}
 	}
 
@@ -1144,7 +1236,7 @@ void MakeActions(Unit* Player, Unit* Foe, bool isAI, bool isShowDices = true)
 		int R = 0;
 		if (!isAI)
 		{
-			while (n <= 0 || n > 6)
+			while (n <= 0 || n >6&&n!=99)
 			{
 				cout << "\nSelect(" << Player->Stamina << " ap left):" << endl;
 				cout << "1: Attack(1 ap)" << endl;
@@ -1153,6 +1245,7 @@ void MakeActions(Unit* Player, Unit* Foe, bool isAI, bool isShowDices = true)
 				cout << "4: Charge(2 ap)" << endl;
 				cout << "5: Defend(" << Player->Stamina << " ap)" << endl;
 				cout << "6: Use(" << Player->Stamina << " ap)" << endl;
+				cout << "99:debug_win" << endl;
 				wait(500);
 				cin >> n;
 				cout << "\r             \r";
@@ -1167,6 +1260,10 @@ void MakeActions(Unit* Player, Unit* Foe, bool isAI, bool isShowDices = true)
 		R = xd6(1, isShowDices);
 		switch (n)
 		{
+		case 99:
+			Foe->HP = 0;
+			Player->Stamina = 0;
+			break;
 		case 1:
 			Player->Stamina--;
 			cout << " attacks (vs " << Foe->name << "'s " << Foe->Base.Def << "DEF)" << endl;
@@ -1181,7 +1278,7 @@ void MakeActions(Unit* Player, Unit* Foe, bool isAI, bool isShowDices = true)
 				{
 					textcolor(Green);
 					cout << " success!" << endl;
-					Foe->DamageMe(Player->Base.Att, R == Foe->Base.Def);
+					Foe->DamageMe(Player->Base.Att-(Player->Base.Att/2)*(Foe->myPerk != Wall?0:1), R == Foe->Base.Def);
 					cout << endl << Foe->name << "  HP:" << Foe->HP << endl;
 
 				}
@@ -1219,7 +1316,11 @@ void MakeActions(Unit* Player, Unit* Foe, bool isAI, bool isShowDices = true)
 					cout << " success!" << endl;
 					Player->RDP.Pop();
 					cout << endl << Player->name << "  RT:" << Player->RDP.amount << endl;
-
+					if (Foe->dna.dt == DNAType::Sneaker)
+					{
+						Foe->Stamina += 1;
+						cout << endl <<Foe->name << " Sneaks around and gain initiative!"  << endl;
+					}
 				}
 				else
 				{
@@ -1233,6 +1334,11 @@ void MakeActions(Unit* Player, Unit* Foe, bool isAI, bool isShowDices = true)
 			}
 			else
 			{
+				if (Foe->dna.dt == DNAType::Sneaker)
+				{
+					Foe->Stamina +=1;
+					cout << endl << Foe->name << " Sneaks around and gain initiative!" << endl;
+				}
 				Player->SubDicePool--;
 				Player->Stamina = 0;
 			}
@@ -1289,9 +1395,19 @@ void MakeActions(Unit* Player, Unit* Foe, bool isAI, bool isShowDices = true)
 					{
 						textcolor(Green);
 						cout << " success!" << endl;
-						Foe->DamageMe(Player->Base.Att, true);
+						
+						if (Foe->dna.dt == DNAType::Sneaker)
+						{
+							Foe->DamageMe(Player->Base.Att, false);
+							Foe->Stamina += 1;
+							cout << endl << Foe->name << " Sneaks around and gain initiative!" << endl;
+						}
+						else
+						{
+							Foe->DamageMe(Player->Base.Att - (Player->Base.Att / 2) * (Foe->myPerk != Wall ? 0 : 1), true);
+						}
+					
 						cout << endl << Foe->name << "  HP:" << Foe->HP << endl;
-
 					}
 					else
 					{
@@ -1496,24 +1612,29 @@ bool Battle(Unit* Player, Unit* Foe)
 
 		system("PAUSE");
 		system("CLS");
-		if (Player->Stamina > 0)
+		while (Player->Stamina > 0 || Foe->Stamina > 0)
 		{
-			ShowStats(*Player, *Foe);
-			MakeActions(Player, Foe, false, true);
 
-		}
-		else if (Foe->Stamina > 0)
-		{
-			ShowStatsMin(*Player, *Foe);
-			MakeActions(Foe, Player, true, true);
-		}
-		else
-		{
-			cout << "Draw! Retreat! Tuche!" << endl;
 
-			Player->PushRt(1);
-			Foe->PushRt(1);
+			if (Player->Stamina > 0)
+			{
+				ShowStats(*Player, *Foe);
+				MakeActions(Player, Foe, false, true);
 
+			}
+			else if (Foe->Stamina > 0)
+			{
+				ShowStatsMin(*Player, *Foe);
+				MakeActions(Foe, Player, true, true);
+			}
+			else
+			{
+				cout << "Draw! Retreat! Tuche!" << endl;
+
+				Player->PushRt(1);
+				Foe->PushRt(1);
+
+			}
 		}
 
 		system("PAUSE");
@@ -1652,10 +1773,12 @@ int main()
 	cout << "2 - Fiechter (no rage exploding in attacks)" << endl;
 	cout << "3 - Dancer(no rage exploding in moves)" << endl;
 	cout << "4 - Tactitian(best reroll dice)" << endl;
+	cout << "5 - Sneaker(instant base attack then enemy retreats)" << endl;
+	cout << "6 - Wall(reduce enemy attacks to one step)" << endl;
 	pprk = -1;
-	while (pprk < 0 || pprk>4)
+while (pprk < 0 || pprk>6)
 	{
-		cout << "Enter 0 - 4:";
+		cout << "Enter 0 - 6:";
 		cin >> pprk;
 	}
 	Player.myPerk = Perk(pprk);
